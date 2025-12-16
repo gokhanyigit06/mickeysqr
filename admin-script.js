@@ -27,16 +27,31 @@ let adminBanners = JSON.parse(localStorage.getItem(STORAGE_KEYS.BANNERS)) || [
         active: true
     }
 ];
+let adminCategories = JSON.parse(localStorage.getItem(STORAGE_KEYS.CATEGORIES)) || {
+    starters: { name: 'Başlangıçlar', icon: '🍲', bgImage: 'https://images.unsplash.com/photo-1547592166-23ac45744acd?w=800&q=80' },
+    snacks: { name: 'Atıştırmalıklar', icon: '🍗', bgImage: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=800&q=80' },
+    salads: { name: 'Salatalar', icon: '🥗', bgImage: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80' },
+    asian: { name: 'Asya Mutfağı', icon: '🍜', bgImage: 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=800&q=80' },
+    pizza: { name: 'Pizza', icon: '🍕', bgImage: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80' },
+    burgers: { name: 'Burgerler', icon: '🍔', bgImage: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800&q=80' },
+    pasta: { name: 'Makarna', icon: '🍝', bgImage: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80' },
+    mexican: { name: 'Meksika Mutfağı', icon: '🌮', bgImage: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&q=80' },
+    mains: { name: 'Ana Yemekler', icon: '🍖', bgImage: 'https://images.unsplash.com/photo-1544025162-d76694265947?w=800&q=80' },
+    desserts: { name: 'Tatlılar', icon: '🍰', bgImage: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=800&q=80' },
+    drinks: { name: 'İçecekler', icon: '🍹', bgImage: 'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800&q=80' }
+};
 
 let currentEditingProduct = null;
 let currentEditingAllergen = null;
 let currentEditingBanner = null;
+let currentEditingCategory = null;
 
 // Save data to localStorage
 function saveData() {
     localStorage.setItem(STORAGE_KEYS.MENU_DATA, JSON.stringify(adminMenuData));
     localStorage.setItem(STORAGE_KEYS.ALLERGENS, JSON.stringify(adminAllergens));
     localStorage.setItem(STORAGE_KEYS.BANNERS, JSON.stringify(adminBanners));
+    localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(adminCategories));
 }
 
 // Navigation
@@ -217,43 +232,150 @@ function closeProductModal() {
 // ==================== Categories Management ====================
 function renderCategoriesGrid() {
     const grid = document.getElementById('categoriesGrid');
-    const categories = {};
+    const productCounts = {};
 
+    // Count products per category
     adminMenuData.forEach(item => {
-        if (!categories[item.category]) {
-            categories[item.category] = 0;
+        if (!productCounts[item.category]) {
+            productCounts[item.category] = 0;
         }
-        categories[item.category]++;
+        productCounts[item.category]++;
     });
 
-    const categoryIcons = {
-        starters: '🍲',
-        snacks: '🍗',
-        salads: '🥗',
-        asian: '🍜',
-        pizza: '🍕',
-        burgers: '🍔',
-        pasta: '🍝',
-        mexican: '🌮',
-        mains: '🍖',
-        desserts: '🍰',
-        drinks: '🍹'
-    };
+    grid.innerHTML = Object.keys(adminCategories).map(catKey => {
+        const cat = adminCategories[catKey];
+        const count = productCounts[catKey] || 0;
 
-    grid.innerHTML = Object.keys(categories).map(cat => `
-        <div class="category-card">
-            <div class="category-card-header">
-                <div class="category-card-icon">${categoryIcons[cat] || '📦'}</div>
-                <div>
-                    <div class="category-card-name">${getCategoryName(cat)}</div>
-                    <div class="category-card-count">${categories[cat]} ürün</div>
+        return `
+            <div class="category-card">
+                <div class="category-card-header">
+                    <div class="category-card-icon">${cat.icon}</div>
+                    <div>
+                        <div class="category-card-name">${cat.name}</div>
+                        <div class="category-card-count">${count} ürün</div>
+                    </div>
+                </div>
+                <div class="action-buttons" style="margin-top: 1rem;">
+                    <button class="btn-secondary btn-sm" onclick="editCategory('${catKey}')">Düzenle</button>
+                    <button class="btn-danger btn-sm" onclick="deleteCategory('${catKey}')">Sil</button>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
-// ==================== Allergens Management ====================
+// Add Category
+document.getElementById('addCategoryBtn')?.addEventListener('click', () => {
+    currentEditingCategory = null;
+    document.getElementById('categoryModalTitle').textContent = 'Yeni Kategori Ekle';
+    document.getElementById('categoryForm').reset();
+    document.getElementById('categoryKey').readOnly = false;
+    document.getElementById('categoryModal').classList.add('active');
+});
+
+// Edit Category
+function editCategory(key) {
+    currentEditingCategory = key;
+    const category = adminCategories[key];
+    if (!category) return;
+
+    document.getElementById('categoryModalTitle').textContent = 'Kategori Düzenle';
+    document.getElementById('categoryKey').value = key;
+    document.getElementById('categoryKey').readOnly = true; // Don't allow changing key
+    document.getElementById('categoryName').value = category.name;
+    document.getElementById('categoryIcon').value = category.icon;
+    document.getElementById('categoryBgImage').value = category.bgImage || '';
+
+    document.getElementById('categoryModal').classList.add('active');
+}
+
+// Delete Category
+function deleteCategory(key) {
+    const productCount = adminMenuData.filter(p => p.category === key).length;
+
+    if (productCount > 0) {
+        if (!confirm(`Bu kategoride ${productCount} ürün var. Kategoriyi silmek bu ürünleri de silecektir. Devam etmek istiyor musunuz?`)) {
+            return;
+        }
+        // Remove products in this category
+        adminMenuData = adminMenuData.filter(p => p.category !== key);
+    } else {
+        if (!confirm('Bu kategoriyi silmek istediğinizden emin misiniz?')) {
+            return;
+        }
+    }
+
+    delete adminCategories[key];
+    saveData();
+    renderCategoriesGrid();
+    updateCategorySelects();
+    showNotification('Kategori başarıyla silindi', 'success');
+}
+
+// Category Form Submit
+document.getElementById('categoryForm')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const key = document.getElementById('categoryKey').value.toLowerCase().replace(/\s+/g, '-');
+    const categoryData = {
+        name: document.getElementById('categoryName').value,
+        icon: document.getElementById('categoryIcon').value,
+        bgImage: document.getElementById('categoryBgImage').value
+    };
+
+    if (currentEditingCategory) {
+        // Update existing category
+        adminCategories[currentEditingCategory] = categoryData;
+        showNotification('Kategori başarıyla güncellendi', 'success');
+    } else {
+        // Check if key already exists
+        if (adminCategories[key]) {
+            showNotification('Bu kategori anahtarı zaten kullanılıyor', 'error');
+            return;
+        }
+        // Add new category
+        adminCategories[key] = categoryData;
+        showNotification('Kategori başarıyla eklendi', 'success');
+    }
+
+    saveData();
+    closeCategoryModal();
+    renderCategoriesGrid();
+    updateCategorySelects();
+});
+
+function closeCategoryModal() {
+    document.getElementById('categoryModal').classList.remove('active');
+}
+
+// Update category selects in product form and filter
+function updateCategorySelects() {
+    const productCategorySelect = document.getElementById('productCategory');
+    const categoryFilterSelect = document.getElementById('categoryFilter');
+
+    if (productCategorySelect) {
+        const currentValue = productCategorySelect.value;
+        productCategorySelect.innerHTML = '<option value="">Kategori Seçin</option>' +
+            Object.keys(adminCategories).map(key =>
+                `<option value="${key}">${adminCategories[key].name}</option>`
+            ).join('');
+        productCategorySelect.value = currentValue;
+    }
+
+    if (categoryFilterSelect) {
+        const currentValue = categoryFilterSelect.value;
+        categoryFilterSelect.innerHTML = '<option value="">Tüm Kategoriler</option>' +
+            Object.keys(adminCategories).map(key =>
+                `<option value="${key}">${adminCategories[key].name}</option>`
+            ).join('');
+        categoryFilterSelect.value = currentValue;
+    }
+}
+
+// Update getCategoryName to use adminCategories
+function getCategoryName(categoryKey) {
+    return adminCategories[categoryKey]?.name || categoryKey;
+}
 function renderAllergensList() {
     const list = document.getElementById('allergensList');
 
@@ -573,4 +695,5 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
     renderProductsTable();
+    updateCategorySelects();
 });

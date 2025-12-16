@@ -143,6 +143,13 @@
         <section class="content-section" id="categories-section">
             <div class="section-header">
                 <h2 class="section-title">Kategori Yönetimi</h2>
+                <button class="btn-primary" id="addCategoryBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Yeni Kategori Ekle
+                </button>
             </div>
 
             <div class="categories-grid" id="categoriesGrid">
@@ -343,6 +350,51 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeAllergenModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div class="modal" id="categoryModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="categoryModalTitle">Yeni Kategori Ekle</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="categoryForm" class="modal-body">
+                <div class="form-group">
+                    <label>Kategori Anahtarı (Key) *</label>
+                    <input type="text" id="categoryKey" required placeholder="örn: desserts">
+                    <small style="color: var(--text-muted); font-size: 0.85rem;">Küçük harf, tire veya alt çizgi
+                        kullanın</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategori Adı *</label>
+                    <input type="text" id="categoryName" required placeholder="örn: Tatlılar">
+                </div>
+
+                <div class="form-group">
+                    <label>İkon (Emoji) *</label>
+                    <input type="text" id="categoryIcon" required placeholder="🍰">
+                </div>
+
+                <div class="form-group">
+                    <label>Arka Plan Görseli URL</label>
+                    <input type="text" id="categoryBgImage" placeholder="https://images.unsplash.com/...">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeCategoryModal()">İptal</button>
                     <button type="submit" class="btn-primary">Kaydet</button>
                 </div>
             </form>
