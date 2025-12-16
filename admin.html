@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mickey's Admin Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="logo">MICKEY'S</h1>
+            <p class="logo-subtitle">Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="products">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                </svg>
+                Ürün Yönetimi
+            </button>
+
+            <button class="nav-item" data-section="categories">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                Kategoriler
+            </button>
+
+            <button class="nav-item" data-section="allergens">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                </svg>
+                Alerjenler
+            </button>
+
+            <button class="nav-item" data-section="banners">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="15" rx="2" ry="2" />
+                    <polyline points="17 2 12 7 7 2" />
+                </svg>
+                Banner Yönetimi
+            </button>
+
+            <button class="nav-item" data-section="excel">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                </svg>
+                Excel İşlemleri
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Çıkış Yap
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Products Section -->
+        <section class="content-section active" id="products-section">
+            <div class="section-header">
+                <h2 class="section-title">Ürün Yönetimi</h2>
+                <button class="btn-primary" id="addProductBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Yeni Ürün Ekle
+                </button>
+            </div>
+
+            <div class="filters">
+                <div class="search-box">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="productSearch" placeholder="Ürün ara...">
+                </div>
+
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">Tüm Kategoriler</option>
+                    <option value="starters">Başlangıçlar</option>
+                    <option value="snacks">Atıştırmalıklar</option>
+                    <option value="salads">Salatalar</option>
+                    <option value="asian">Asya Mutfağı</option>
+                    <option value="pizza">Pizza</option>
+                    <option value="burgers">Burgerler</option>
+                    <option value="pasta">Makarna</option>
+                    <option value="mexican">Meksika Mutfağı</option>
+                    <option value="mains">Ana Yemekler</option>
+                    <option value="desserts">Tatlılar</option>
+                    <option value="drinks">İçecekler</option>
+                </select>
+            </div>
+
+            <div class="products-table">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Görsel</th>
+                            <th>Ürün Adı</th>
+                            <th>Kategori</th>
+                            <th>Fiyat</th>
+                            <th>Etiketler</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        <!-- Products will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="content-section" id="categories-section">
+            <div class="section-header">
+                <h2 class="section-title">Kategori Yönetimi</h2>
+            </div>
+
+            <div class="categories-grid" id="categoriesGrid">
+                <!-- Categories will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Allergens Section -->
+        <section class="content-section" id="allergens-section">
+            <div class="section-header">
+                <h2 class="section-title">Alerjen Yönetimi</h2>
+                <button class="btn-primary" id="addAllergenBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Yeni Alerjen Ekle
+                </button>
+            </div>
+
+            <div class="allergens-list" id="allergensList">
+                <!-- Allergens will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Banners Section -->
+        <section class="content-section" id="banners-section">
+            <div class="section-header">
+                <h2 class="section-title">Banner Yönetimi</h2>
+                <button class="btn-primary" id="addBannerBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Yeni Banner Ekle
+                </button>
+            </div>
+
+            <div class="banners-grid" id="bannersGrid">
+                <!-- Banners will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Excel Section -->
+        <section class="content-section" id="excel-section">
+            <div class="section-header">
+                <h2 class="section-title">Excel İşlemleri</h2>
+            </div>
+
+            <div class="excel-actions">
+                <div class="excel-card">
+                    <div class="excel-icon">📥</div>
+                    <h3>Excel'den İçe Aktar</h3>
+                    <p>Toplu ürün güncellemesi yapmak için Excel dosyası yükleyin</p>
+                    <input type="file" id="excelImport" accept=".xlsx,.xls" style="display: none;">
+                    <button class="btn-secondary" onclick="document.getElementById('excelImport').click()">
+                        Dosya Seç
+                    </button>
+                </div>
+
+                <div class="excel-card">
+                    <div class="excel-icon">📤</div>
+                    <h3>Excel'e Aktar</h3>
+                    <p>Mevcut ürünleri Excel dosyası olarak indirin</p>
+                    <button class="btn-secondary" id="exportExcel">
+                        Excel İndir
+                    </button>
+                </div>
+
+                <div class="excel-card">
+                    <div class="excel-icon">📋</div>
+                    <h3>Şablon İndir</h3>
+                    <p>Ürün ekleme için Excel şablonunu indirin</p>
+                    <button class="btn-secondary" id="downloadTemplate">
+                        Şablon İndir
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Product Modal -->
+    <div class="modal" id="productModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="productModalTitle">Yeni Ürün Ekle</h3>
+                <button class="modal-close" onclick="closeProductModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="productForm" class="modal-body">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Ürün Adı (Türkçe) *</label>
+                        <input type="text" id="productName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ürün Adı (İngilizce)</label>
+                        <input type="text" id="productNameEn">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kategori *</label>
+                        <select id="productCategory" required>
+                            <option value="">Kategori Seçin</option>
+                            <option value="starters">Başlangıçlar</option>
+                            <option value="snacks">Atıştırmalıklar</option>
+                            <option value="salads">Salatalar</option>
+                            <option value="asian">Asya Mutfağı</option>
+                            <option value="pizza">Pizza</option>
+                            <option value="burgers">Burgerler</option>
+                            <option value="pasta">Makarna</option>
+                            <option value="mexican">Meksika Mutfağı</option>
+                            <option value="mains">Ana Yemekler</option>
+                            <option value="desserts">Tatlılar</option>
+                            <option value="drinks">İçecekler</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fiyat (₺) *</label>
+                        <input type="number" id="productPrice" step="0.01" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Açıklama *</label>
+                        <textarea id="productDescription" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Görsel URL</label>
+                        <input type="text" id="productImage" placeholder="https://...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Görsel Kodu</label>
+                        <input type="text" id="productImageCode" placeholder="örn: burger-classic">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Etiketler</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="tagSpicy" value="spicy">
+                                <span>🌶️ Acılı</span>
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="tagVegetarian" value="vegetarian">
+                                <span>🌱 Vejetaryen</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeProductModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Allergen Modal -->
+    <div class="modal" id="allergenModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="allergenModalTitle">Yeni Alerjen Ekle</h3>
+                <button class="modal-close" onclick="closeAllergenModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="allergenForm" class="modal-body">
+                <div class="form-group">
+                    <label>Alerjen Adı *</label>
+                    <input type="text" id="allergenName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>İkon (Emoji)</label>
+                    <input type="text" id="allergenIcon" placeholder="🥜">
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama *</label>
+                    <textarea id="allergenDescription" rows="3" required></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeAllergenModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Banner Modal -->
+    <div class="modal" id="bannerModal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 class="modal-title" id="bannerModalTitle">Yeni Banner Ekle</h3>
+                <button class="modal-close" onclick="closeBannerModal()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+
+            <form id="bannerForm" class="modal-body">
+                <div class="form-group">
+                    <label>Banner Başlığı *</label>
+                    <input type="text" id="bannerTitle" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Alt Başlık</label>
+                    <input type="text" id="bannerSubtitle">
+                </div>
+
+                <div class="form-group">
+                    <label>İndirim Oranı (%)</label>
+                    <input type="number" id="bannerDiscount" min="0" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label>Arka Plan Rengi</label>
+                    <input type="color" id="bannerBgColor" value="#C84B31">
+                </div>
+
+                <div class="form-group">
+                    <label>Görsel URL</label>
+                    <input type="text" id="bannerImage" placeholder="https://...">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="bannerActive">
+                        <span>Aktif</span>
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeBannerModal()">İptal</button>
+                    <button type="submit" class="btn-primary">Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="menu-data.js"></script>
+    <script src="admin-script.js"></script>
+</body>
+
+</html>

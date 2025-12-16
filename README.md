@@ -1,113 +1,113 @@
-# 🍽️ QR Menü - Dijital Menü Sistemi
+# 🍽️ Mickey's Restaurant - QR Menü Sistemi
 
-Modern ve kullanıcı dostu bir dijital menü uygulaması. Restoranlar, kafeler ve işletmeler için QR kod ile erişilebilir menü sistemi.
+Modern, responsive ve kullanıcı dostu bir dijital menü uygulaması. Restoran müşterileri için QR kod ile erişilebilen menü ve yöneticiler için kapsamlı admin paneli içerir.
 
-![QR Menu](https://img.shields.io/badge/Version-1.0.0-green)
-![License](https://img.shields.io/badge/License-MIT-blue)
+![Mickey's Restaurant](https://img.shields.io/badge/Version-1.0.0-blue)
+![License](https://img.shields.io/badge/License-MIT-green)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 
 ## ✨ Özellikler
 
-### 🎨 Kullanıcı Arayüzü
-- **Modern ve Şık Tasarım** - Temiz ve minimalist görünüm
-- **Responsive Tasarım** - Mobil, tablet ve masaüstü uyumlu
-- **İki Seviyeli Kategori Sistemi** 
-  - Ana kategoriler: İçecekler / Yiyecekler
-  - Alt kategoriler: Bitki Çayları, Espresso Bar, Tatlılar vb.
-- **Ürün Detay Modal** - Ürüne tıklayınca büyük görsel ve detay
+### 📱 Müşteri Menüsü
+- **Accordion Menü Yapısı**: Kategorilere göre düzenlenmiş, açılır-kapanır menü
+- **Gerçek Yemek Görselleri**: Unsplash entegrasyonu ile profesyonel görseller
+- **Kategori Bazlı Gezinme**: 11 farklı kategori (Başlangıçlar, Atıştırmalıklar, Salatalar, vb.)
+- **Detaylı Ürün Bilgisi**: Her ürün için modal pencerede detaylı açıklama
+- **Alerjen Bilgileri**: Özel modal pencerede alerjen listesi
+- **Promosyon Banner**: Kampanya duyuruları için dinamik banner alanı
+- **Responsive Tasarım**: Mobil, tablet ve masaüstü uyumlu
+- **Modern UI/UX**: Glassmorphism, smooth animations, gradient renkler
 
-### ⚙️ Admin Paneli
-- **Yeni Ürün Ekleme** - Tam özellikli ürün ekleme modalı
-- **Ürün Düzenleme** - Tüm ürün bilgilerini düzenleme
-- **Ürün Silme** - Onay ile ürün silme
-- **Kategori Yönetimi** - Yeni kategoriler ekleme ve silme
-- **Excel İle Ürün Yükleme** - Toplu ürün ekleme
-- **Fiyat Güncelleme** - Sadece fiyatları güncelleyebilme
-- **İşletme Ayarları** - Logo ve işletme adı özelleştirme
-- **Arama Özelliği** - Ürünlerde arama yapabilme
-
-### 💾 Veri Yönetimi
-- **LocalStorage** - Veriler tarayıcıda saklanır
-- **Excel İçe/Dışa Aktarma** - Kolay veri yönetimi
-- **Offline Çalışma** - İnternet bağlantısı gerektirmez
+### 🔧 Admin Paneli
+- **Ürün Yönetimi**: Ekleme, düzenleme, silme, arama ve filtreleme
+- **Kategori Yönetimi**: Kategori bazlı ürün görüntüleme ve istatistikler
+- **Alerjen Yönetimi**: Alerjen bilgilerini ekleme ve düzenleme
+- **Banner Yönetimi**: Kampanya bannerlarını yönetme
+- **Excel İşlemleri**: 
+  - Toplu ürün içe aktarma
+  - Excel'e dışa aktarma
+  - Şablon indirme
+- **LocalStorage**: Tarayıcı tabanlı veri saklama
+- **Modern Dashboard**: Sidebar navigasyon, responsive tasarım
 
 ## 🚀 Kurulum
 
 ### Gereksinimler
 - Modern bir web tarayıcısı (Chrome, Firefox, Safari, Edge)
-- Python 3 (yerel sunucu için) veya herhangi bir web sunucusu
+- Yerel sunucu (opsiyonel, dosyaları doğrudan açabilirsiniz)
 
 ### Adımlar
 
 1. **Projeyi klonlayın:**
 ```bash
-git clone https://github.com/KULLANICI_ADINIZ/qrmenu.git
-cd qrmenu
+git clone https://github.com/KULLANICI_ADI/qr-menu-app.git
+cd qr-menu-app
 ```
 
-2. **Yerel sunucuyu başlatın:**
+2. **Dosyaları açın:**
+   - Müşteri menüsü için: `index.html`
+   - Admin paneli için: `admin.html`
+
+3. **Yerel sunucu ile çalıştırma (opsiyonel):**
 ```bash
-python3 -m http.server 8080
+# Python 3
+python -m http.server 8000
+
+# Node.js (http-server)
+npx http-server
+
+# PHP
+php -S localhost:8000
 ```
 
-3. **Tarayıcıda açın:**
-```
-http://localhost:8080
-```
-
-## 📖 Kullanım Kılavuzu
-
-### Yeni Ürün Eklemek
-
-1. Sağ alttaki **⚙️** butonuna tıklayın
-2. **"Ürün Yönet"** sekmesine gidin
-3. **"+ Yeni Ürün Ekle"** butonuna tıklayın
-4. Formu doldurun:
-   - **Ürün Adı** (zorunlu)
-   - **Ana Kategori** (İçecekler/Yiyecekler)
-   - **Alt Kategori** (mevcut kategorilerden seçin veya yeni oluşturun)
-   - **Açıklama**
-   - **Fiyat** (zorunlu)
-   - **Resim URL** (opsiyonel)
-5. **"Ürün Ekle"** butonuna tıklayın
-
-### Kategori Yönetimi
-
-1. Admin panelini açın
-2. **"Kategori Yönet"** sekmesine gidin
-3. İçecekler veya Yiyecekler bölümünde:
-   - Yeni kategori adı yazın
-   - **"+ Ekle"** butonuna tıklayın
-4. Kategori silmek için **×** butonuna tıklayın
-
-### Excel İle Toplu Ürün Ekleme
-
-1. Admin panelinde **"Excel Yükle"** sekmesine gidin
-2. [Örnek şablonu indirin](templates.html)
-3. Excel dosyanızı hazırlayın (şu sütunlar olmalı):
-   - Ana Kategori
-   - Alt Kategori
-   - Ürün Adı
-   - Açıklama
-   - Fiyat
-   - Resim URL
-4. Dosyayı seçin ve **"Yükle ve İçe Aktar"** butonuna tıklayın
-
-### Fiyat Güncelleme
-
-1. Admin panelinde **"Fiyat Güncelle"** sekmesine gidin
-2. Excel dosyası hazırlayın (Ürün Adı, Yeni Fiyat sütunları)
-3. Dosyayı yükleyin
+4. **Tarayıcıda açın:**
+   - Müşteri menüsü: `http://localhost:8000/index.html`
+   - Admin paneli: `http://localhost:8000/admin.html`
 
 ## 📂 Proje Yapısı
 
 ```
-qrmenu/
-├── index.html          # Ana sayfa
-├── templates.html      # Excel şablonları indirme sayfası
-├── style.css          # CSS tasarımı
-├── app.js             # JavaScript mantığı
-└── README.md          # Bu dosya
+qr-menu-app/
+├── index.html              # Ana menü sayfası
+├── admin.html              # Admin panel sayfası
+├── style.css               # Ana menü stilleri
+├── admin-style.css         # Admin panel stilleri
+├── script.js               # Ana menü JavaScript
+├── admin-script.js         # Admin panel JavaScript
+├── menu-data.js            # Menü verileri
+├── README.md               # Proje dokümantasyonu
+├── LICENSE                 # MIT Lisansı
+└── .gitignore             # Git ignore dosyası
 ```
+
+## 💻 Kullanım
+
+### Müşteri Menüsü
+
+1. QR kod ile veya doğrudan `index.html` dosyasını açarak menüye erişin
+2. Kategorilere tıklayarak ürünleri görüntüleyin
+3. Ürünlere tıklayarak detaylı bilgi alın
+4. "Alerjenler" butonuna tıklayarak alerjen bilgilerini görüntüleyin
+
+### Admin Paneli
+
+1. `admin.html` dosyasını açın
+2. Sol menüden istediğiniz bölümü seçin:
+   - **Ürün Yönetimi**: Ürün ekle, düzenle, sil
+   - **Kategoriler**: Kategori bazlı istatistikler
+   - **Alerjenler**: Alerjen bilgilerini yönet
+   - **Banner Yönetimi**: Kampanya bannerlarını düzenle
+   - **Excel İşlemleri**: Toplu ürün işlemleri
+
+### Excel İle Toplu Ürün Güncelleme
+
+1. Admin panelde "Excel İşlemleri" sekmesine gidin
+2. "Şablon İndir" butonuna tıklayarak örnek dosyayı indirin
+3. Excel dosyasını düzenleyin
+4. "Dosya Seç" ile güncellenmiş dosyayı yükleyin
+5. Ürünler otomatik olarak güncellenecektir
 
 ## 🎨 Özelleştirme
 
@@ -117,123 +117,124 @@ qrmenu/
 
 ```css
 :root {
-    --primary-color: #5a6c57;      /* Ana renk */
-    --primary-dark: #4a5847;       /* Koyu ton */
-    --accent-color: #c94b4b;       /* Vurgu rengi */
+    --primary-color: #8B4513;
+    --secondary-color: #D2691E;
+    --accent-color: #CD853F;
+    /* ... diğer renkler */
 }
 ```
 
-### İşletme Bilgileri
+### Kategori Ekleme
 
-Admin panelinde **"Ayarlar"** sekmesinden:
-- İşletme adını değiştirin
-- Logo yükleyin
+`script.js` dosyasındaki `categoryConfig` objesine yeni kategori ekleyin:
 
-## 📊 Excel Şablon Formatı
-
-### Ürün Ekleme Şablonu
-
-| Ana Kategori | Alt Kategori | Ürün Adı | Açıklama | Fiyat | Resim URL |
-|--------------|--------------|----------|----------|-------|-----------|
-| İçecekler | Bitki Çayları | Coco Chai | kakao çekirdekleri, rooibos... | 245 | |
-| Yiyecekler | Tatlılar | Cheesecake | Ev yapımı cheesecake | 85 | |
-
-### Fiyat Güncelleme Şablonu
-
-| Ürün Adı | Yeni Fiyat |
-|----------|------------|
-| Coco Chai | 250 |
-| Cheesecake | 90 |
-
-## 🔧 Teknik Detaylar
-
-### Kullanılan Teknolojiler
-
-- **HTML5** - Semantik yapı
-- **CSS3** - Modern tasarım, flexbox, grid, animasyonlar
-- **JavaScript (ES6+)** - Dinamik içerik yönetimi
-- **SheetJS (XLSX)** - Excel dosyası okuma/yazma
-- **LocalStorage API** - Veri saklama
-- **Google Fonts** - Inter ve Playfair Display fontları
-
-### Tarayıcı Desteği
-
-- ✅ Chrome (önerilen)
-- ✅ Firefox
-- ✅ Safari
-- ✅ Edge
-- ✅ Opera
-
-## 🌐 Canlı Demo
-
-Uygulamayı yerel sunucuda çalıştırmak için:
-
-```bash
-# Python 3 ile
-python3 -m http.server 8080
-
-# Node.js ile (http-server kurulu ise)
-npx http-server -p 8080
-
-# PHP ile
-php -S localhost:8080
+```javascript
+const categoryConfig = {
+    // ... mevcut kategoriler
+    newCategory: {
+        name: 'Yeni Kategori',
+        icon: '🍴',
+        bgImage: 'https://...'
+    }
+};
 ```
 
-Tarayıcıda açın: `http://localhost:8080`
+### Ürün Ekleme
 
-## 📝 Notlar
+Admin panelden veya `menu-data.js` dosyasını düzenleyerek:
 
-- Excel dosyalarınızda Türkçe karakter kullanabilirsiniz
-- Sütun isimleri büyük/küçük harf duyarlı değildir
-- Resim URL'leri boş bırakılabilir (IMAGE COMING SOON görseli gösterilir)
-- Ana kategoriler: "İçecekler" ve "Yiyecekler" olmalıdır
-- Alt kategoriler otomatik olarak oluşturulur
-- Fiyat güncellemede ürün adı tam eşleşmelidir
-- Tüm veriler tarayıcınızın LocalStorage'ında saklanır
-- Tarayıcı verilerini temizlerseniz ürünler silinir
+```javascript
+{
+    id: 73,
+    name: "Yeni Ürün",
+    nameEn: "New Product",
+    price: 200,
+    description: "Ürün açıklaması",
+    category: "starters",
+    tags: ["vegetarian"],
+    image: "product-image"
+}
+```
 
-## 🎯 Gelecek Özellikler
+## 🔒 Veri Saklama
 
-- [ ] Ürün resmi yükleme (dosyadan)
-- [ ] QR kod oluşturma
-- [ ] Tema değiştirme (açık/koyu mod)
-- [ ] Çoklu dil desteği
-- [ ] Sipariş sistemi
-- [ ] Veritabanı entegrasyonu
-- [ ] Ürün stok takibi
-- [ ] Kategori sıralama
-- [ ] Toplu ürün silme
+Uygulama, tüm verileri tarayıcının **LocalStorage**'ında saklar:
+- `mickeys_menu_data`: Menü ürünleri
+- `mickeys_allergens`: Alerjen bilgileri
+- `mickeys_banners`: Banner kampanyaları
+
+**Not:** LocalStorage temizlendiğinde veriler varsayılan değerlere döner.
+
+## 🌐 Canlıya Alma
+
+### GitHub Pages ile
+
+1. GitHub'da yeni bir repository oluşturun
+2. Projeyi push edin
+3. Settings > Pages > Source: main branch seçin
+4. Siteniz `https://KULLANICI_ADI.github.io/qr-menu-app/` adresinde yayınlanacaktır
+
+### Netlify ile
+
+1. [Netlify](https://netlify.com) hesabı oluşturun
+2. "New site from Git" seçeneğini kullanın
+3. Repository'nizi bağlayın
+4. Deploy edin
+
+### Vercel ile
+
+```bash
+npm i -g vercel
+vercel
+```
+
+## 📱 QR Kod Oluşturma
+
+Menünüz için QR kod oluşturmak için:
+
+1. [QR Code Generator](https://www.qr-code-generator.com/) gibi bir site kullanın
+2. Menü URL'nizi girin
+3. QR kodu indirin ve restoranda kullanın
+
+## 🛠️ Teknolojiler
+
+- **HTML5**: Semantik yapı
+- **CSS3**: Modern styling, animations, flexbox, grid
+- **JavaScript (ES6+)**: Vanilla JS, no frameworks
+- **SheetJS (xlsx)**: Excel import/export
+- **Unsplash**: Yemek görselleri
+- **LocalStorage**: Client-side data persistence
+
+## 📝 Lisans
+
+Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
 
 ## 🤝 Katkıda Bulunma
 
 1. Bu repository'yi fork edin
-2. Yeni bir branch oluşturun (`git checkout -b feature/yeniOzellik`)
-3. Değişikliklerinizi commit edin (`git commit -am 'Yeni özellik eklendi'`)
-4. Branch'inizi push edin (`git push origin feature/yeniOzellik`)
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add some amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
 5. Pull Request oluşturun
 
-## 📄 Lisans
+## 📧 İletişim
 
-Bu proje MIT lisansı altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına bakın.
-
-## 👥 Geliştirici
-
-Geliştirici: **Ekibiniz**
+Sorularınız için issue açabilir veya pull request gönderebilirsiniz.
 
 ## 🙏 Teşekkürler
 
-- [SheetJS](https://sheetjs.com/) - Excel işlemleri için
-- [Google Fonts](https://fonts.google.com/) - Fontlar için
+- [Unsplash](https://unsplash.com) - Yemek görselleri için
+- [SheetJS](https://sheetjs.com) - Excel işlemleri için
+- [Google Fonts](https://fonts.google.com) - Outfit ve Playfair Display fontları için
 
-## 📞 İletişim
+## 📸 Ekran Görüntüleri
 
-Sorularınız veya önerileriniz için:
-- Issue açın
-- Pull request gönderin
+### Müşteri Menüsü
+![Menu Screenshot](screenshots/menu.png)
+
+### Admin Paneli
+![Admin Screenshot](screenshots/admin.png)
 
 ---
 
-**Not**: Bu uygulama modern web teknolojileri kullanılarak geliştirilmiştir. Referans tasarım: KAKULE QR Menü
-
-**Versiyon**: 1.0.0  
-**Son Güncelleme**: Aralık 2025
+**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
