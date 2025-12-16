@@ -549,45 +549,158 @@ function closeBannerModal() {
 // ==================== Excel Operations ====================
 // Export to Excel
 document.getElementById('exportExcel')?.addEventListener('click', () => {
-    const ws_data = [
-        ['ID', 'Ürün Adı', 'İngilizce Adı', 'Kategori', 'Fiyat', 'Açıklama', 'Görsel Kodu', 'Acılı', 'Vejetaryen']
-    ];
+    try {
+        const wb = XLSX.utils.book_new();
 
-    adminMenuData.forEach(item => {
-        ws_data.push([
-            item.id,
-            item.name,
-            item.nameEn || '',
-            item.category,
-            item.price,
-            item.description,
-            item.image || '',
-            item.tags.includes('spicy') ? 'Evet' : 'Hayır',
-            item.tags.includes('vegetarian') ? 'Evet' : 'Hayır'
-        ]);
-    });
+        // Group products by category
+        const productsByCategory = {};
+        adminMenuData.forEach(item => {
+            if (!productsByCategory[item.category]) {
+                productsByCategory[item.category] = [];
+            }
+            productsByCategory[item.category].push(item);
+        });
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    XLSX.utils.book_append_sheet(wb, ws, 'Ürünler');
-    XLSX.writeFile(wb, 'mickeys-menu.xlsx');
+        // Create a sheet for each category
+        Object.keys(productsByCategory).forEach(categoryKey => {
+            const categoryName = getCategoryName(categoryKey);
+            const products = productsByCategory[categoryKey];
 
-    showNotification('Excel dosyası başarıyla indirildi', 'success');
+            const ws_data = [
+                ['ID', 'Ürün Adı', 'İngilizce Adı', 'Fiyat (₺)', 'Açıklama', 'Görsel Kodu', 'Acılı', 'Vejetaryen']
+            ];
+
+            products.forEach(item => {
+                ws_data.push([
+                    item.id,
+                    item.name,
+                    item.nameEn || '',
+                    item.price,
+                    item.description,
+                    item.image || '',
+                    item.tags.includes('spicy') ? 'Evet' : 'Hayır',
+                    item.tags.includes('vegetarian') ? 'Evet' : 'Hayır'
+                ]);
+            });
+
+            const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+            // Set column widths
+            ws['!cols'] = [
+                { wch: 5 },   // ID
+                { wch: 25 },  // Ürün Adı
+                { wch: 25 },  // İngilizce Adı
+                { wch: 10 },  // Fiyat
+                { wch: 50 },  // Açıklama
+                { wch: 20 },  // Görsel Kodu
+                { wch: 8 },   // Acılı
+                { wch: 12 }   // Vejetaryen
+            ];
+
+            // Sanitize sheet name (max 31 chars, no special chars)
+            let sheetName = categoryName.substring(0, 31).replace(/[:\\\/\?\*\[\]]/g, '');
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+        });
+
+        // Also create a summary sheet with all products
+        const allProductsData = [
+            ['ID', 'Ürün Adı', 'İngilizce Adı', 'Kategori', 'Fiyat (₺)', 'Açıklama', 'Görsel Kodu', 'Acılı', 'Vejetaryen']
+        ];
+
+        adminMenuData.forEach(item => {
+            allProductsData.push([
+                item.id,
+                item.name,
+                item.nameEn || '',
+                getCategoryName(item.category),
+                item.price,
+                item.description,
+                item.image || '',
+                item.tags.includes('spicy') ? 'Evet' : 'Hayır',
+                item.tags.includes('vegetarian') ? 'Evet' : 'Hayır'
+            ]);
+        });
+
+        const allWs = XLSX.utils.aoa_to_sheet(allProductsData);
+        allWs['!cols'] = [
+            { wch: 5 },   // ID
+            { wch: 25 },  // Ürün Adı
+            { wch: 25 },  // İngilizce Adı
+            { wch: 20 },  // Kategori
+            { wch: 10 },  // Fiyat
+            { wch: 50 },  // Açıklama
+            { wch: 20 },  // Görsel Kodu
+            { wch: 8 },   // Acılı
+            { wch: 12 }   // Vejetaryen
+        ];
+
+        // Add summary sheet as first sheet
+        XLSX.utils.book_append_sheet(wb, allWs, 'Tüm Ürünler');
+
+        // Generate filename with date
+        const date = new Date();
+        const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+        const filename = `mickeys-menu-${dateStr}.xlsx`;
+
+        // Write file
+        XLSX.writeFile(wb, filename);
+
+        showNotification(`Excel dosyası başarıyla indirildi: ${filename}`, 'success');
+    } catch (error) {
+        console.error('Excel export error:', error);
+        showNotification('Excel dosyası oluşturulurken hata oluştu', 'error');
+    }
 });
 
 // Download Template
 document.getElementById('downloadTemplate')?.addEventListener('click', () => {
-    const ws_data = [
-        ['ID', 'Ürün Adı', 'İngilizce Adı', 'Kategori', 'Fiyat', 'Açıklama', 'Görsel Kodu', 'Acılı', 'Vejetaryen'],
-        ['', 'Örnek Ürün', 'Sample Product', 'starters', '150', 'Ürün açıklaması', 'product-image', 'Hayır', 'Evet']
-    ];
+    try {
+        const wb = XLSX.utils.book_new();
 
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    XLSX.utils.book_append_sheet(wb, ws, 'Şablon');
-    XLSX.writeFile(wb, 'mickeys-menu-template.xlsx');
+        // Create template with examples for each category
+        const ws_data = [
+            ['ID', 'Ürün Adı', 'İngilizce Adı', 'Kategori', 'Fiyat (₺)', 'Açıklama', 'Görsel Kodu', 'Acılı', 'Vejetaryen'],
+            ['', 'Örnek Çorba', 'Sample Soup', 'starters', '150', 'Günün özel çorbası', 'soup', 'Hayır', 'Hayır'],
+            ['', 'Örnek Salata', 'Sample Salad', 'salads', '180', 'Taze mevsim sebzeleri ile', 'salad', 'Hayır', 'Evet'],
+            ['', 'Örnek Pizza', 'Sample Pizza', 'pizza', '220', 'İtalyan usulü pizza', 'pizza', 'Hayır', 'Hayır'],
+            ['', 'Örnek Burger', 'Sample Burger', 'burgers', '200', 'Özel soslu burger', 'burger', 'Hayır', 'Hayır'],
+            ['', 'Örnek Tatlı', 'Sample Dessert', 'desserts', '120', 'Ev yapımı tatlı', 'dessert', 'Hayır', 'Evet']
+        ];
 
-    showNotification('Şablon dosyası başarıyla indirildi', 'success');
+        const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+        // Set column widths
+        ws['!cols'] = [
+            { wch: 5 },   // ID
+            { wch: 25 },  // Ürün Adı
+            { wch: 25 },  // İngilizce Adı
+            { wch: 20 },  // Kategori
+            { wch: 10 },  // Fiyat
+            { wch: 50 },  // Açıklama
+            { wch: 20 },  // Görsel Kodu
+            { wch: 8 },   // Acılı
+            { wch: 12 }   // Vejetaryen
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, 'Şablon');
+
+        // Add a sheet with category list
+        const categoryData = [
+            ['Kategori Anahtarı', 'Kategori Adı'],
+            ...Object.keys(adminCategories).map(key => [key, adminCategories[key].name])
+        ];
+
+        const catWs = XLSX.utils.aoa_to_sheet(categoryData);
+        catWs['!cols'] = [{ wch: 20 }, { wch: 25 }];
+        XLSX.utils.book_append_sheet(wb, catWs, 'Kategoriler');
+
+        XLSX.writeFile(wb, 'mickeys-menu-template.xlsx');
+
+        showNotification('Şablon dosyası başarıyla indirildi', 'success');
+    } catch (error) {
+        console.error('Template download error:', error);
+        showNotification('Şablon dosyası oluşturulurken hata oluştu', 'error');
+    }
 });
 
 // Import from Excel
@@ -606,6 +719,8 @@ document.getElementById('excelImport')?.addEventListener('change', (e) => {
             // Skip header row
             const rows = jsonData.slice(1);
             let importCount = 0;
+            let updateCount = 0;
+            let newCount = 0;
 
             rows.forEach(row => {
                 if (!row[1]) return; // Skip empty rows
@@ -614,13 +729,27 @@ document.getElementById('excelImport')?.addEventListener('change', (e) => {
                 if (row[7] === 'Evet') tags.push('spicy');
                 if (row[8] === 'Evet') tags.push('vegetarian');
 
+                // Handle both old format (with category column) and new format
+                const categoryValue = row[3];
+                let categoryKey = categoryValue;
+
+                // If category is in Turkish, find the key
+                if (categoryValue && !adminCategories[categoryValue]) {
+                    const foundKey = Object.keys(adminCategories).find(
+                        key => adminCategories[key].name === categoryValue
+                    );
+                    if (foundKey) {
+                        categoryKey = foundKey;
+                    }
+                }
+
                 const product = {
                     id: row[0] || Math.max(...adminMenuData.map(p => p.id), 0) + 1,
                     name: row[1],
                     nameEn: row[2] || '',
-                    category: row[3],
+                    category: categoryKey,
                     price: parseFloat(row[4]),
-                    description: row[5],
+                    description: row[5] || '',
                     image: row[6] || '',
                     tags: tags
                 };
@@ -628,21 +757,28 @@ document.getElementById('excelImport')?.addEventListener('change', (e) => {
                 const existingIndex = adminMenuData.findIndex(p => p.id === product.id);
                 if (existingIndex >= 0) {
                     adminMenuData[existingIndex] = product;
+                    updateCount++;
                 } else {
                     adminMenuData.push(product);
+                    newCount++;
                 }
                 importCount++;
             });
 
             saveData();
             renderProductsTable();
-            showNotification(`${importCount} ürün başarıyla içe aktarıldı`, 'success');
+
+            let message = `${importCount} ürün işlendi: ${newCount} yeni, ${updateCount} güncellendi`;
+            showNotification(message, 'success');
         } catch (error) {
-            showNotification('Excel dosyası okunurken hata oluştu', 'error');
-            console.error(error);
+            console.error('Excel import error:', error);
+            showNotification('Excel dosyası okunurken hata oluştu: ' + error.message, 'error');
         }
     };
     reader.readAsArrayBuffer(file);
+
+    // Reset file input
+    e.target.value = '';
 });
 
 // ==================== Notifications ====================
