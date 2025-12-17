@@ -1,4 +1,5 @@
 // Admin Panel JavaScript
+console.log('admin-script.js loaded!');
 // LocalStorage keys
 const STORAGE_KEYS = {
     MENU_DATA: 'mickeys_menu_data',
@@ -57,6 +58,8 @@ function saveData() {
 // Navigation
 document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', function () {
+        console.log('Nav clicked, section:', this.dataset.section);
+
         // Update active nav item
         document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
         this.classList.add('active');
@@ -64,13 +67,30 @@ document.querySelectorAll('.nav-item').forEach(item => {
         // Show corresponding section
         const section = this.dataset.section;
         document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
-        document.getElementById(`${section}-section`).classList.add('active');
+
+        const sectionElement = document.getElementById(`${section}-section`);
+        console.log('Section element found:', sectionElement);
+
+        if (sectionElement) {
+            sectionElement.classList.add('active');
+            console.log('Active class added to:', `${section}-section`);
+        } else {
+            console.error('Section element NOT found:', `${section}-section`);
+        }
 
         // Load section data
         if (section === 'products') renderProductsTable();
         if (section === 'categories') renderCategoriesGrid();
         if (section === 'allergens') renderAllergensList();
         if (section === 'banners') renderBannersGrid();
+        if (section === 'pricing') {
+            console.log('Pricing section - calling init functions');
+            updatePricingCategorySelects();
+            updatePercentagePreview();
+            updateRoundingPreview();
+            renderPricingHistory();
+            console.log('Pricing init complete');
+        }
     });
 });
 
@@ -832,4 +852,406 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 document.addEventListener('DOMContentLoaded', () => {
     renderProductsTable();
     updateCategorySelects();
+    initializePricingSection();
 });
+
+// ==================== Pricing Management ====================
+const PRICING_HISTORY_KEY = 'mickeys_pricing_history';
+let pricingHistory = JSON.parse(localStorage.getItem(PRICING_HISTORY_KEY)) || [];
+
+function initializePricingSection() {
+    console.log('initializePricingSection called');
+
+    // Update category selects for pricing section
+    updatePricingCategorySelects();
+    console.log('updatePricingCategorySelects done');
+
+    // Initialize percentage preview
+    updatePercentagePreview();
+    console.log('updatePercentagePreview done');
+
+    updateRoundingPreview();
+    console.log('updateRoundingPreview done');
+
+    // Event listeners for percentage change
+    document.getElementById('pricePercentage')?.addEventListener('input', updatePercentagePreview);
+    document.getElementById('pricingCategoryFilter')?.addEventListener('change', updatePercentagePreview);
+
+    // Event listeners for rounding change
+    document.getElementById('roundingValue')?.addEventListener('change', updateRoundingPreview);
+    document.getElementById('roundingCategoryFilter')?.addEventListener('change', updateRoundingPreview);
+    document.querySelectorAll('input[name="roundingMethod"]').forEach(radio => {
+        radio.addEventListener('change', updateRoundingPreview);
+    });
+
+    // Button handlers
+    document.getElementById('previewPercentageBtn')?.addEventListener('click', updatePercentagePreview);
+    document.getElementById('applyPercentageBtn')?.addEventListener('click', applyPercentageChange);
+    document.getElementById('previewRoundingBtn')?.addEventListener('click', updateRoundingPreview);
+    document.getElementById('applyRoundingBtn')?.addEventListener('click', applyRoundingChange);
+
+    // Render pricing history
+    renderPricingHistory();
+}
+
+function updatePricingCategorySelects() {
+    const pricingCategorySelect = document.getElementById('pricingCategoryFilter');
+    const roundingCategorySelect = document.getElementById('roundingCategoryFilter');
+
+    const options = '<option value="">Tüm Kategoriler</option>' +
+        Object.keys(adminCategories).map(key =>
+            `<option value="${key}">${adminCategories[key].name}</option>`
+        ).join('');
+
+    if (pricingCategorySelect) {
+        pricingCategorySelect.innerHTML = options;
+    }
+
+    if (roundingCategorySelect) {
+        roundingCategorySelect.innerHTML = options;
+    }
+}
+
+function getFilteredProducts(categoryFilter) {
+    if (!categoryFilter) {
+        return [...adminMenuData];
+    }
+    return adminMenuData.filter(p => p.category === categoryFilter);
+}
+
+function updatePercentagePreview() {
+    const percentageInput = document.getElementById('pricePercentage');
+    const categoryFilterInput = document.getElementById('pricingCategoryFilter');
+    const affectedCountEl = document.getElementById('affectedProductsCount');
+    const examplePriceEl = document.getElementById('examplePriceChange');
+
+    if (!percentageInput || !affectedCountEl || !examplePriceEl) {
+        return; // Elements not yet available
+    }
+
+    const percentage = parseFloat(percentageInput.value) || 0;
+    const categoryFilter = categoryFilterInput?.value || '';
+
+    const filteredProducts = getFilteredProducts(categoryFilter);
+    const affectedCount = filteredProducts.length;
+
+    // Update affected products count
+    affectedCountEl.textContent = affectedCount;
+
+    // Update example price change
+    const examplePrice = 100;
+    const newPrice = examplePrice * (1 + percentage / 100);
+    examplePriceEl.textContent = `${newPrice.toFixed(0)}₺`;
+}
+
+function updateRoundingPreview() {
+    const roundingValueEl = document.getElementById('roundingValue');
+    const roundingCategoryEl = document.getElementById('roundingCategoryFilter');
+    const affectedCountEl = document.getElementById('roundingAffectedCount');
+    const examplesContainer = document.getElementById('roundingExamples');
+
+    if (!roundingValueEl || !affectedCountEl || !examplesContainer) {
+        return; // Elements not yet available
+    }
+
+    const roundingValue = parseInt(roundingValueEl.value) || 5;
+    const categoryFilter = roundingCategoryEl?.value || '';
+    const method = document.querySelector('input[name="roundingMethod"]:checked')?.value || 'round';
+
+    const filteredProducts = getFilteredProducts(categoryFilter);
+
+    // Count products that will be affected (price would change)
+    let affectedCount = 0;
+    const examples = [];
+
+    filteredProducts.forEach(product => {
+        const newPrice = roundPrice(product.price, roundingValue, method);
+        if (newPrice !== product.price) {
+            affectedCount++;
+            if (examples.length < 3) {
+                examples.push({
+                    name: product.name.substring(0, 20) + (product.name.length > 20 ? '...' : ''),
+                    oldPrice: product.price,
+                    newPrice: newPrice
+                });
+            }
+        }
+    });
+
+    // Update affected count
+    affectedCountEl.textContent = affectedCount;
+
+    // Update examples
+    if (examples.length > 0) {
+        examplesContainer.innerHTML = examples.map(ex => `
+            <div class="preview-example-item">
+                <span class="product-name">${ex.name}:</span>
+                <span class="old-price">${ex.oldPrice}₺</span>
+                <span class="arrow">→</span>
+                <span class="new-price">${ex.newPrice}₺</span>
+            </div>
+        `).join('');
+    } else {
+        examplesContainer.innerHTML = '<div class="preview-example-item"><span style="color: var(--text-muted);">Değişiklik yapılacak ürün yok</span></div>';
+    }
+}
+
+function roundPrice(price, roundTo, method) {
+    switch (method) {
+        case 'ceil':
+            return Math.ceil(price / roundTo) * roundTo;
+        case 'floor':
+            return Math.floor(price / roundTo) * roundTo;
+        case 'round':
+        default:
+            return Math.round(price / roundTo) * roundTo;
+    }
+}
+
+// Pending action for confirm modal
+let pendingConfirmAction = null;
+
+function showConfirmModal(message, onConfirm) {
+    document.getElementById('confirmMessage').textContent = message;
+    pendingConfirmAction = onConfirm;
+    document.getElementById('confirmModal').classList.add('active');
+}
+
+function closeConfirmModal() {
+    document.getElementById('confirmModal').classList.remove('active');
+    pendingConfirmAction = null;
+}
+
+function confirmAction() {
+    if (pendingConfirmAction) {
+        pendingConfirmAction();
+    }
+    closeConfirmModal();
+}
+
+function applyPercentageChange() {
+    const percentage = parseFloat(document.getElementById('pricePercentage')?.value) || 0;
+    const categoryFilter = document.getElementById('pricingCategoryFilter')?.value || '';
+
+    if (percentage === 0) {
+        showNotification('Lütfen bir yüzde değeri girin', 'error');
+        return;
+    }
+
+    const filteredProducts = getFilteredProducts(categoryFilter);
+
+    if (filteredProducts.length === 0) {
+        showNotification('Uygulanacak ürün bulunamadı', 'error');
+        return;
+    }
+
+    const categoryName = categoryFilter ? adminCategories[categoryFilter]?.name : 'Tüm Kategoriler';
+    const confirmMessage = `${filteredProducts.length} ürünün fiyatı %${percentage > 0 ? '+' : ''}${percentage} ${percentage > 0 ? 'artırılacak' : 'azaltılacak'}. Devam etmek istiyor musunuz?`;
+
+    // Show custom modal instead of confirm()
+    showConfirmModal(confirmMessage, function () {
+        // Store old prices for history
+        const changes = [];
+
+        // Apply percentage change
+        filteredProducts.forEach(product => {
+            const oldPrice = product.price;
+            const newPrice = Math.round(product.price * (1 + percentage / 100) * 100) / 100;
+
+            // Find and update in adminMenuData
+            const index = adminMenuData.findIndex(p => p.id === product.id);
+            if (index >= 0) {
+                adminMenuData[index].price = newPrice;
+                changes.push({
+                    productId: product.id,
+                    productName: product.name,
+                    oldPrice: oldPrice,
+                    newPrice: newPrice
+                });
+            }
+        });
+
+        // Save to localStorage
+        saveData();
+
+        // Add to history
+        addToPricingHistory({
+            type: 'percentage',
+            percentage: percentage,
+            category: categoryName,
+            affectedProducts: changes.length,
+            changes: changes,
+            timestamp: new Date().toISOString()
+        });
+
+        // Update UI
+        renderProductsTable();
+        updatePercentagePreview();
+        renderPricingHistory();
+
+        showNotification(`${changes.length} ürünün fiyatı %${percentage > 0 ? '+' : ''}${percentage} ${percentage > 0 ? 'artırıldı' : 'azaltıldı'}`, 'success');
+    });
+}
+
+function applyRoundingChange() {
+    const roundingValue = parseInt(document.getElementById('roundingValue')?.value) || 5;
+    const categoryFilter = document.getElementById('roundingCategoryFilter')?.value || '';
+    const method = document.querySelector('input[name="roundingMethod"]:checked')?.value || 'round';
+
+    const filteredProducts = getFilteredProducts(categoryFilter);
+
+    if (filteredProducts.length === 0) {
+        showNotification('Uygulanacak ürün bulunamadı', 'error');
+        return;
+    }
+
+    // Count actual changes
+    const changes = [];
+    filteredProducts.forEach(product => {
+        const newPrice = roundPrice(product.price, roundingValue, method);
+        if (newPrice !== product.price) {
+            changes.push({
+                productId: product.id,
+                productName: product.name,
+                oldPrice: product.price,
+                newPrice: newPrice
+            });
+        }
+    });
+
+    if (changes.length === 0) {
+        showNotification('Yuvarlanacak ürün bulunamadı', 'info');
+        return;
+    }
+
+    const categoryName = categoryFilter ? adminCategories[categoryFilter]?.name : 'Tüm Kategoriler';
+    const methodNames = { round: 'En Yakın', ceil: 'Yukarı', floor: 'Aşağı' };
+    const confirmMessage = `${changes.length} ürünün fiyatı ${roundingValue}₺'ye ${methodNames[method].toLowerCase()} yuvarlanacak. Devam etmek istiyor musunuz?`;
+
+    // Show custom modal instead of confirm()
+    showConfirmModal(confirmMessage, function () {
+        // Apply rounding
+        changes.forEach(change => {
+            const index = adminMenuData.findIndex(p => p.id === change.productId);
+            if (index >= 0) {
+                adminMenuData[index].price = change.newPrice;
+            }
+        });
+
+        // Save to localStorage
+        saveData();
+
+        // Add to history
+        addToPricingHistory({
+            type: 'rounding',
+            roundingValue: roundingValue,
+            method: method,
+            category: categoryName,
+            affectedProducts: changes.length,
+            changes: changes,
+            timestamp: new Date().toISOString()
+        });
+
+        // Update UI
+        renderProductsTable();
+        updateRoundingPreview();
+        renderPricingHistory();
+
+        showNotification(`${changes.length} ürünün fiyatı ${roundingValue}₺'ye yuvarlandı`, 'success');
+    });
+}
+
+function addToPricingHistory(entry) {
+    pricingHistory.unshift(entry);
+    // Keep only last 20 entries
+    if (pricingHistory.length > 20) {
+        pricingHistory = pricingHistory.slice(0, 20);
+    }
+    localStorage.setItem(PRICING_HISTORY_KEY, JSON.stringify(pricingHistory));
+}
+
+function renderPricingHistory() {
+    const container = document.getElementById('pricingHistoryList');
+    if (!container) return;
+
+    if (pricingHistory.length === 0) {
+        container.innerHTML = '<div class="pricing-history-empty">Henüz fiyat değişikliği yapılmadı.</div>';
+        return;
+    }
+
+    container.innerHTML = pricingHistory.map((entry, index) => {
+        const date = new Date(entry.timestamp);
+        const timeStr = date.toLocaleString('tr-TR', {
+            day: '2-digit',
+            month: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        let icon, iconClass, actionText, detailsText;
+
+        if (entry.type === 'percentage') {
+            if (entry.percentage > 0) {
+                icon = '📈';
+                iconClass = 'increase';
+                actionText = `%${entry.percentage} Artış`;
+            } else {
+                icon = '📉';
+                iconClass = 'decrease';
+                actionText = `%${Math.abs(entry.percentage)} Azalış`;
+            }
+            detailsText = `${entry.category} - ${entry.affectedProducts} ürün`;
+        } else {
+            icon = '🔄';
+            iconClass = 'round';
+            const methodNames = { round: 'En Yakın', ceil: 'Yukarı', floor: 'Aşağı' };
+            actionText = `${entry.roundingValue}₺'ye Yuvarlama (${methodNames[entry.method]})`;
+            detailsText = `${entry.category} - ${entry.affectedProducts} ürün`;
+        }
+
+        return `
+            <div class="pricing-history-item">
+                <div class="pricing-history-icon ${iconClass}">${icon}</div>
+                <div class="pricing-history-content">
+                    <div class="pricing-history-action">${actionText}</div>
+                    <div class="pricing-history-details">${detailsText}</div>
+                </div>
+                <div class="pricing-history-time">${timeStr}</div>
+                <button class="pricing-history-undo" onclick="undoPricingChange(${index})" title="Geri Al">
+                    ↩ Geri Al
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+function undoPricingChange(index) {
+    const entry = pricingHistory[index];
+    if (!entry || !entry.changes) {
+        showNotification('Bu değişiklik geri alınamaz', 'error');
+        return;
+    }
+
+    showConfirmModal('Bu fiyat değişikliğini geri almak istediğinizden emin misiniz?', function () {
+        // Revert changes
+        entry.changes.forEach(change => {
+            const productIndex = adminMenuData.findIndex(p => p.id === change.productId);
+            if (productIndex >= 0) {
+                adminMenuData[productIndex].price = change.oldPrice;
+            }
+        });
+
+        // Remove from history
+        pricingHistory.splice(index, 1);
+        localStorage.setItem(PRICING_HISTORY_KEY, JSON.stringify(pricingHistory));
+
+        // Save and update
+        saveData();
+        renderProductsTable();
+        renderPricingHistory();
+        updatePercentagePreview();
+        updateRoundingPreview();
+
+        showNotification('Fiyat değişikliği geri alındı', 'success');
+    });
+}

@@ -816,3 +816,337 @@ tbody tr:hover {
 .mb-3 {
     margin-bottom: 1.5rem;
 }
+
+/* ==================== Pricing Section ==================== */
+.pricing-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.pricing-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    transition: all var(--transition);
+}
+
+.pricing-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.pricing-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.pricing-icon {
+    font-size: 2.5rem;
+}
+
+.pricing-card-header h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.pricing-description {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.pricing-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.percentage-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.percentage-input-wrapper input {
+    width: 100%;
+    padding: 0.75rem;
+    padding-right: 3rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: var(--font-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    transition: all var(--transition);
+}
+
+.percentage-input-wrapper input:focus {
+    outline: none;
+    border-color: var(--admin-accent);
+    box-shadow: 0 0 0 3px rgba(200, 75, 49, 0.1);
+}
+
+.percentage-suffix {
+    position: absolute;
+    right: 1rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.form-hint {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition);
+    font-weight: 500;
+}
+
+.radio-label:hover {
+    border-color: var(--admin-accent);
+}
+
+.radio-label input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"]:checked + span {
+    color: var(--admin-accent);
+}
+
+.radio-label:has(input:checked) {
+    border-color: var(--admin-accent);
+    background: rgba(200, 75, 49, 0.05);
+}
+
+.pricing-preview {
+    background: linear-gradient(135deg, rgba(200, 75, 49, 0.05) 0%, rgba(210, 105, 30, 0.05) 100%);
+    border: 1px solid rgba(200, 75, 49, 0.2);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+}
+
+.preview-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--admin-accent);
+    margin-bottom: 0.75rem;
+}
+
+.preview-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(200, 75, 49, 0.1);
+}
+
+.preview-content:last-child {
+    border-bottom: none;
+}
+
+.preview-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.preview-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.preview-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.preview-example-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-sm);
+}
+
+.preview-example-item .old-price {
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+.preview-example-item .arrow {
+    color: var(--admin-accent);
+}
+
+.preview-example-item .new-price {
+    color: var(--admin-success);
+    font-weight: 600;
+}
+
+.pricing-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.pricing-actions button {
+    flex: 1;
+    justify-content: center;
+}
+
+/* Pricing History */
+.pricing-history-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+}
+
+.pricing-history-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.pricing-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.pricing-history-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem;
+    font-style: italic;
+}
+
+.pricing-history-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-primary);
+    border-radius: var(--radius-md);
+    transition: all var(--transition);
+}
+
+.pricing-history-item:hover {
+    box-shadow: var(--shadow-sm);
+}
+
+.pricing-history-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(200, 75, 49, 0.1);
+    border-radius: var(--radius-md);
+    font-size: 1.25rem;
+}
+
+.pricing-history-icon.increase {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.pricing-history-icon.decrease {
+    background: rgba(16, 185, 129, 0.1);
+}
+
+.pricing-history-icon.round {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.pricing-history-content {
+    flex: 1;
+}
+
+.pricing-history-action {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+}
+
+.pricing-history-details {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.pricing-history-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.pricing-history-undo {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.pricing-history-undo:hover {
+    background: var(--admin-danger);
+    border-color: var(--admin-danger);
+    color: var(--text-white);
+}
+
+/* Responsive for Pricing */
+@media (max-width: 900px) {
+    .pricing-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .radio-group {
+        flex-direction: column;
+    }
+    
+    .pricing-actions {
+        flex-direction: column;
+    }
+}
